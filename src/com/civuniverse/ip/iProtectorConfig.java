@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 class iProtectorConfig {
-    // Whether or not encryption is enabled. Using DES encryption, key is the encryption key used.
+    // Whether or not encryption is enabled. Using (REDACTED) encryption, key is the encryption key used.
     protected boolean encrypt;
     protected String key;
 
