@@ -1,0 +1,32 @@
+# iProtector Configuration
+
+# False by default, set to true to enable IP checking.
+enabled: false
+
+# Whether or not to encrypt serialized IPs, defaults to true.
+encryption: true
+# Encryption Key (WARNING: If you want to enabled encryption please change this to a custom value.)
+key: NULL
+
+# Block level protection, set to 1 by default.
+# 1 = Blocks Non-residential IPs, such as hosting providers, proxies, vpns, etc...
+# 2 = Blocks suspicious residential IPs, causes false positives often.
+# 3 = WIP, double checks all IPs via 2 or more IP fraud detectors. (DO NOT USE, NOT IMPLEMENTED)
+block-level: 1
+
+# Whether or not to send alerts to players with the iProtector.alert permission. defaults to false.
+alerts: false
+
+# Whitelisted IPs, Player UUIDs, or Player names.
+# Specify what type it is using (IP), (UUID), or (Name).
+whitelisted:
+  - (IP) 0.0.0.0
+  - (UUID) 69a79f4-44e9-4726-a5be-fca90e38aaf5
+  - (Name) Notch
+
+# Blacklisted, IPs, Player UUIDs, or Player names.
+# Specify what type it is using (IP), (UUID), or (Name).
+blacklisted:
+  - (IP) 0.0.0.0
+  - (UUID) 69a79f4-44e9-4726-a5be-fca90e38aaf5
+  - (Name) Notch
