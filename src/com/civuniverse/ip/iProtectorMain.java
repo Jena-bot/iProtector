@@ -10,12 +10,12 @@ import java.io.IOException;
 
 public class iProtectorMain extends JavaPlugin {
     // Config Options, plus verified ips in order to avoid making too many calls to the IP fraud detector website
-    public boolean enabled = false;
     private static iProtectorMain plugin;
     protected static iProtectorConfig config;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         plugin = this;
 
         if (!getConfig().getBoolean("enabled")) {
@@ -53,6 +53,9 @@ public class iProtectorMain extends JavaPlugin {
 
         // Register Listener
         Bukkit.getPluginManager().registerEvents(new iProtectorListener(), this);
+
+        // Register Command
+        getCommand("/iprotect").setExecutor(new iProtectorCommand());
 
         getLogger().info("iProtector loaded successfully.");
 
