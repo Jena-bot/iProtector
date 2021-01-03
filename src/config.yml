@@ -8,6 +8,9 @@ encryption: true
 # Encryption Key (WARNING: If you want to enabled encryption please change this to a custom value.)
 key: NULL
 
+# Stops players from joining with a high-alert, non-residential ip.
+prevent-player-join: false
+
 # Block level protection, set to 1 by default.
 # 1 = Blocks Non-residential IPs, such as hosting providers, proxies, vpns, etc...
 # 2 = Blocks suspicious residential IPs, causes false positives often.

@@ -55,7 +55,8 @@ public class iProtectorListener implements Listener {
             return;
         }
         if (iProtectorMain.config.getFlaggedips().contains(event.getAddress().getHostAddress())) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cYou are using a VPN or Proxy.");
+            if (iProtectorMain.config.prevent)
+                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cYou are using a VPN or Proxy.");
             Bukkit.getLogger().info(event.getName() + " logged in with a VPN or Proxy. (local)");
             return;
         }
@@ -88,7 +89,8 @@ public class iProtectorListener implements Listener {
                 iProtectorMain.config.verify(event.getAddress().getHostAddress());
                 return;
             case 1:
-                event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cYou are using a VPN or Proxy.");
+                if (iProtectorMain.config.prevent)
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cYou are using a VPN or Proxy.");
                 Bukkit.getLogger().info(event.getName() + " logged in with a VPN or Proxy.");
                 // Saving the flagged IP
                 iProtectorMain.config.addFlag(event.getAddress().getHostAddress());
@@ -103,7 +105,8 @@ public class iProtectorListener implements Listener {
                 return;
             case 2:
                 if (iProtectorMain.config.getBlock() == 2) {
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§csuspicious IP");
+                    if (iProtectorMain.config.prevent)
+                        event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cSuspicious IP");
                     Bukkit.getLogger().info(event.getName() + " has a suspicious IP, disallowed them to join.");
 
                     // Alert Staff

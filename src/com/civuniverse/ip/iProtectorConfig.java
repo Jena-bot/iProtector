@@ -15,6 +15,9 @@ class iProtectorConfig {
     protected boolean encrypt;
     protected String key;
 
+    // Whether or not to prevent players from joining
+    protected boolean prevent;
+
     // Whether or not to alert people with permission
     protected boolean alert;
 
@@ -48,6 +51,9 @@ class iProtectorConfig {
         encrypt = config.getBoolean("encryption");
         if (encrypt) key = config.getString("key");
         else key = "disabled";
+
+        // import prevent player join
+        prevent = config.getBoolean("prevent-player-join");
 
         // import block level and alerts
         block = config.getInt("block-level");
