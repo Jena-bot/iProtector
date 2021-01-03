@@ -12,8 +12,7 @@ public class iProtectorCommand implements CommandExecutor {
             , "|_|_|_|_|_|_|_|_|_|_________________________________________________________/", "                  !",
             "§3Developed by Hafixion, also known as Jena-bot",
             "&diProtector is a plugin to prevent VPNs and Proxies from logging onto your server.",
-            "§dStopping players from joining with non-residential IP addresses and malicious ones.",
-            "§5Type /iprotect help in order to see available commands."};
+            "§dStopping players from joining with non-residential IP addresses and malicious ones."};
     public String prefix = "§6[§biProtector§6]§r";
 
     @Override

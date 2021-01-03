@@ -1,0 +1,28 @@
+name: iProtector
+main: com.civuniverse.ip.iProtectorMain
+api-version: 1.12
+version: b1.0
+
+commands:
+  /iprotect:
+    description: Main command for iProtector
+    aliases:
+      - /iprotector
+      - /ip
+    permission: iprotector.command
+    permission-message: §cYou don't have permission to access iProtector's commands.
+
+permissions:
+  iprotector.command:
+    description: allows you to use /iprotector, to reload, add/remove people to black/whitelist.
+    default: op
+
+  iprotector.alert:
+    description: alerts the user of people using an anti-vpn/proxy and to suspicious IPs.
+    default: op
+
+  iprotector:
+    description: gives the user complete access to iprotector ingame.
+    children:
+      - iprotector.command
+      - iprotector.alert
