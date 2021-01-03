@@ -92,14 +92,38 @@ public class iProtectorListener implements Listener {
                 Bukkit.getLogger().info(event.getName() + " logged in with a VPN or Proxy.");
                 // Saving the flagged IP
                 iProtectorMain.config.addFlag(event.getAddress().getHostAddress());
+
+                // Alert players
+                if (iProtectorMain.config.isAlert()) {
+                    Bukkit.getOnlinePlayers().forEach(player -> {
+                        if (player.hasPermission("iprotector.alert"))
+                            player.sendMessage("§c" + event.getName() + " attempted to connect with a VPN or Proxy or malicious IP.");
+                    });
+                }
                 return;
             case 2:
                 if (iProtectorMain.config.getBlock() == 2) {
-                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cMalicious IP");
+                    event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§csuspicious IP");
                     Bukkit.getLogger().info(event.getName() + " has a suspicious IP, disallowed them to join.");
+
+                    // Alert Staff
+                    if (iProtectorMain.config.isAlert()) {
+                        Bukkit.getOnlinePlayers().forEach(player -> {
+                            if (player.hasPermission("iprotector.alert"))
+                                player.sendMessage("§c" + event.getName() + " attempted to connect with a suspicious IP.");
+                        });
+                    }
                 } else {
                     event.allow();
                     Bukkit.getLogger().info(event.getName() + " has a suspicious IP.");
+
+                    // Alert Staff
+                    if (iProtectorMain.config.isAlert()) {
+                        Bukkit.getOnlinePlayers().forEach(player -> {
+                            if (player.hasPermission("iprotector.alert"))
+                                player.sendMessage("§c" + event.getName() + " connected with a suspicious IP.");
+                        });
+                    }
                 }
         }
     }
