@@ -6,7 +6,7 @@ enabled: false
 # Whether or not to encrypt serialized IPs, defaults to true.
 encryption: true
 # Encryption Key (WARNING: If you want to enabled encryption please change this to a custom value.)
-algorithm: NULL
+key: NULL
 
 # Block level protection, set to 1 by default.
 # 1 = Blocks Non-residential IPs, such as hosting providers, proxies, vpns, etc...

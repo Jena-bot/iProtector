@@ -1,6 +1,6 @@
 package com.civuniverse.ip;
 
-import com.civuniverse.ip.libraries.EncryptionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,10 +11,12 @@ import java.io.IOException;
 public class iProtectorMain extends JavaPlugin {
     // Config Options, plus verified ips in order to avoid making too many calls to the IP fraud detector website
     public boolean enabled = false;
+    private static iProtectorMain plugin;
     protected static iProtectorConfig config;
 
     @Override
     public void onEnable() {
+        plugin = this;
 
         if (!getConfig().getBoolean("enabled")) {
             getLogger().severe("IPROTECTOR DISABLED, CHECK CONFIG.YML");
@@ -49,15 +51,39 @@ public class iProtectorMain extends JavaPlugin {
         // Initialize Encryption
         EncryptionManager.main(new String[]{config.getKey()});
 
+        // Register Listener
+        Bukkit.getPluginManager().registerEvents(new iProtectorListener(), this);
+
         getLogger().info("iProtector loaded successfully.");
 
+    }
+
+    @Override
+    public void onDisable() {
+        // Save the config, including flagged and verified ips.
+        if (config != null) {
+            try {
+                config.save(new File("plugins/iProtector/config.yml"), new File("plugins/iProtector/data.yml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void reload() {
         getServer().getConsoleSender().sendMessage("Reloading iProtector...");
 
+        // OnDisable
+        if (config != null) {
+            try {
+                config.save(new File("plugins/iProtector/config.yml"), new File("plugins/iProtector/data.yml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (!getConfig().getBoolean("enabled")) {
-            getServer().getConsoleSender().sendMessage("IPROTECTOR DISABLED, CHECK CONFIG.YML");
+            getLogger().severe("IPROTECTOR DISABLED, CHECK CONFIG.YML");
             this.setEnabled(false);
         }
 
@@ -78,6 +104,21 @@ public class iProtectorMain extends JavaPlugin {
             this.setEnabled(false);
         }
 
+        // Check if the key is set to the default value.
+        if (config.encrypt) {
+            if (config.getKey().equalsIgnoreCase("NULL")) {
+                getLogger().severe("Encryption was enabled but key was not yet, change the key in config.yml to a unique value.");
+                this.setEnabled(false);
+            }
+        } else getLogger().warning("Encryption is disabled, it's recommended to enable it to improve data security.");
+
+        // Initialize Encryption
+        EncryptionManager.main(new String[]{config.getKey()});
+
         getServer().getConsoleSender().sendMessage("iProtector reloaded successfully.");
+    }
+
+    protected static iProtectorMain getInstance() {
+        return plugin;
     }
 }

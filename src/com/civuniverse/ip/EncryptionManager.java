@@ -1,4 +1,4 @@
-package com.civuniverse.ip.libraries;
+package com.civuniverse.ip;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.PBEConfig;
@@ -6,7 +6,7 @@ import org.jasypt.salt.SaltGenerator;
 
 import java.security.Provider;
 
-public class EncryptionManager {
+class EncryptionManager {
     private static PBEConfig config;
 
     public static void main(String[] args) {

@@ -23,6 +23,8 @@ class iProtectorConfig {
 
     // Verified IPs, using to avoid pinging the IP Fraud checker too much, it has a limit of 1k ip queries per day.
     protected List<String> verifiedips = new ArrayList<>();
+    // Flagged IPs, confirmed Proxy/VPNs. avoids pinging the IP Fraud checker.
+    protected List<String> flaggedips = new ArrayList<>();
 
     // Black/Whitelist
     protected List<UUID> whitelisted_uuids = new ArrayList<>();
@@ -38,7 +40,9 @@ class iProtectorConfig {
         boolean[] error = {false, false, false, false};
         
         // import verified ips
-        verifiedips.addAll(verified.getStringList("ips"));
+        verifiedips.addAll(verified.getStringList("verify"));
+        // import flagged ips
+        flaggedips.addAll(verified.getStringList("flag"));
 
         // import encryption config
         encrypt = config.getBoolean("encryption");
@@ -103,15 +107,28 @@ class iProtectorConfig {
     
     // Save Function
     protected void save(File file, File verify) throws IOException {
-        YamlConfiguration yaml;
+        YamlConfiguration yaml = new YamlConfiguration();
         
         // Save verified ips
-        yaml = new YamlConfiguration();
-        yaml.set("verified", verifiedips);
-        yaml.save(verify);
+        if (encrypt) {
+            List<String> encrypted = new ArrayList<>();
+            verifiedips.forEach(s -> encrypted.add(EncryptionManager.encrypt(s)));
+            yaml.set("verify", encrypted);
+        } else {
+            yaml.set("verify", verifiedips);
+            yaml.save(verify);
+        }
+        // Save flagged ips
+        if (encrypt) {
+            List<String> encrypted = new ArrayList<>();
+            flaggedips.forEach(s -> encrypted.add(EncryptionManager.encrypt(s)));
+            yaml.set("flag", encrypted);
+        } else {
+            yaml.set("flag", flaggedips);
+            yaml.save(verify);
+        }
         
         // Save Whitelist
-        yaml = new YamlConfiguration();
         List<String> whitelist = new ArrayList<>();
         
         whitelisted_names.forEach(s -> whitelist.add("(Name) " + s));
@@ -121,7 +138,6 @@ class iProtectorConfig {
         yaml.set("whitelist", whitelist);
 
         // Save blacklist
-        yaml = new YamlConfiguration();
         List<String> blacklist = new ArrayList<>();
 
         blacklisted_names.forEach(s -> blacklist.add("(Name) " + s));
@@ -179,5 +195,49 @@ class iProtectorConfig {
 
     protected String getKey() {
         return key;
+    }
+
+    public List<String> getFlaggedips() {
+        return flaggedips;
+    }
+
+    public void addFlag(String ip) {
+        flaggedips.add(ip);
+    }
+
+    public void removeFlag(String ip) {
+        flaggedips.remove(ip);
+    }
+
+    public void verify(String ip) {
+        verifiedips.add(ip);
+    }
+
+    public void unverify(String ip) {
+        verifiedips.remove(ip);
+    }
+
+    public void setBlacklisted_ips(List<String> blacklisted_ips) {
+        this.blacklisted_ips = blacklisted_ips;
+    }
+
+    public void setBlacklisted_names(List<String> blacklisted_names) {
+        this.blacklisted_names = blacklisted_names;
+    }
+
+    public void setBlacklisted_uuids(List<UUID> blacklisted_uuids) {
+        this.blacklisted_uuids = blacklisted_uuids;
+    }
+
+    public void setWhitelisted_ips(List<String> whitelisted_ips) {
+        this.whitelisted_ips = whitelisted_ips;
+    }
+
+    public void setWhitelisted_names(List<String> whitelisted_names) {
+        this.whitelisted_names = whitelisted_names;
+    }
+
+    public void setWhitelisted_uuids(List<UUID> whitelisted_uuids) {
+        this.whitelisted_uuids = whitelisted_uuids;
     }
 }
