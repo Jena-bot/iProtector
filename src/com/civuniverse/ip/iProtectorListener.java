@@ -58,6 +58,13 @@ public class iProtectorListener implements Listener {
             if (iProtectorMain.config.prevent)
                 event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cYou are using a VPN or Proxy.");
             Bukkit.getLogger().info(event.getName() + " logged in with a VPN or Proxy. (local)");
+
+            if (iProtectorMain.config.isAlert()) {
+                Bukkit.getOnlinePlayers().forEach(player -> {
+                    if (player.hasPermission("iprotector.alert"))
+                        player.sendMessage("§c" + event.getName() + " attempted to connect with a VPN or Proxy or malicious IP.");
+                });
+            }
             return;
         }
 
