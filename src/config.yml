@@ -11,14 +11,17 @@ key: NULL
 # Stops players from joining with a high-alert, non-residential ip.
 prevent-player-join: true
 
-# Block level protection, set to 1 by default.
-# 1 = Blocks Non-residential IPs, such as hosting providers, proxies, vpns, etc...
-# 2 = Blocks suspicious residential IPs, causes false positives often.
-# 3 = WIP, double checks all IPs via 2 or more IP fraud detectors. (DO NOT USE, NOT IMPLEMENTED)
-block-level: 1
+# Protection Level, above 1 is limited via per day.
+# 1 - Using ip-api.com, in addition to the above library. Limits to 45 queries per minute (45 UNIQUE JOINS per minute maximum)
+# 2 - Using proxycheck.io, More reliable than ip-api.com, though has a maximum of 100 queries per day, can be increased using advanced config.
+# 3 - Using getipintel.net, AI algorithm which rates IPs, 500 query soft-limit per day, although it has a fair use policy.
+protection-level: 2
 
 # Whether or not to send alerts to players with the iProtector.alert permission. defaults to false.
 alerts: false
+
+# Dynamic IP flagging, flags players whose IP addresses change yet stay with the same provider within the same latitude-longitude radius.
+dynamic-ip: false
 
 # Whitelisted IPs, Player UUIDs, or Player names.
 # Specify what type it is using (IP), (UUID), or (Name).
@@ -33,3 +36,14 @@ blacklisted:
   - (IP) 0.0.0.0
   - (UUID) 69a79f4-44e9-4726-a5be-fca90e38aaf5
   - (Name) Notch
+
+# Protection Level Advanced Configuration
+
+# The API key used in proxycheck.io, OPTIONAL allows your server to have 1100 queries per day, recommended to use.
+# More instructions available on the WIKI.
+api-key: NULL
+
+# Contact Information using in getipintel.net, required if you want to use it.
+# WARNING: IT IS ABSOLUTELY REQUIRED TO USE A VALID EMAIL,
+# INPUTTING AN INVALID EMAIL PUTS YOUR SERVER AT RISK OF BEING BANNED FROM THE SERVICE.
+contact-info: NULL

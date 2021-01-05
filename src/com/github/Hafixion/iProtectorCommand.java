@@ -1,4 +1,4 @@
-package com.civuniverse.ip;
+package com.github.Hafixion;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +27,7 @@ public class iProtectorCommand implements CommandExecutor {
                             // For adding things to the whitelist.
                             if (args.length >= 4) switch (args[2]) {
                                 case "uuid":
-                                    List<UUID> uuidwhitelist = iProtectorMain.config.getWhitelisted_uuids();
+                                    List<UUID> uuidwhitelist = iProtectorMain.getInstance().config.getWhitelisted_uuids();
 
                                     // Check if UUID is already whitelisted.
                                     if (uuidwhitelist.contains(UUID.fromString(args[3]))) {
@@ -36,7 +36,7 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     uuidwhitelist.add(UUID.fromString(args[3]));
 
-                                    iProtectorMain.config.setWhitelisted_uuids(uuidwhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_uuids(uuidwhitelist);
                                     cs.sendMessage(prefix + "§bAdded " + args[3] + " to the whitelist.");
                                 case "ip":
                                     if (!args[3].contains(".")) {
@@ -44,7 +44,7 @@ public class iProtectorCommand implements CommandExecutor {
                                         return false;
                                     }
 
-                                    List<String> ipwhitelist = iProtectorMain.config.getWhitelisted_ips();
+                                    List<String> ipwhitelist = iProtectorMain.getInstance().config.getWhitelisted_ips();
 
                                     // Check if IP is already whitelisted.
                                     if (ipwhitelist.contains(args[3])) {
@@ -53,10 +53,10 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     ipwhitelist.add(args[3]);
 
-                                    iProtectorMain.config.setWhitelisted_ips(ipwhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_ips(ipwhitelist);
                                     cs.sendMessage(prefix + "§bAdded " + args[3] + " to the whitelist.");
                                 case "name":
-                                    List<String> namewhitelist = iProtectorMain.config.getWhitelisted_names();
+                                    List<String> namewhitelist = iProtectorMain.getInstance().config.getWhitelisted_names();
 
                                     // Check if Name is already whitelisted.
                                     if (namewhitelist.contains(args[3])) {
@@ -65,14 +65,14 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     namewhitelist.add(args[3]);
 
-                                    iProtectorMain.config.setWhitelisted_names(namewhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_names(namewhitelist);
                                     cs.sendMessage(prefix + "§bAdded " + args[3] + " to the whitelist.");
                             } else cs.sendMessage(prefix + "§cYou forgot to specify a uuid, ip, or name to whitelist!");
                             
                         case "remove":
                             if (args.length >= 4) switch (args[2]) {
                                 case "uuid":
-                                    List<UUID> uuidwhitelist = iProtectorMain.config.getWhitelisted_uuids();
+                                    List<UUID> uuidwhitelist = iProtectorMain.getInstance().config.getWhitelisted_uuids();
 
                                     // Check if UUID is whitelisted.
                                     if (!uuidwhitelist.contains(UUID.fromString(args[3]))) {
@@ -81,7 +81,7 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     uuidwhitelist.remove(UUID.fromString(args[3]));
 
-                                    iProtectorMain.config.setWhitelisted_uuids(uuidwhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_uuids(uuidwhitelist);
                                     cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the whitelist.");
                                 case "ip":
                                     if (!args[3].contains(".")) {
@@ -89,7 +89,7 @@ public class iProtectorCommand implements CommandExecutor {
                                         return false;
                                     }
 
-                                    List<String> ipwhitelist = iProtectorMain.config.getWhitelisted_ips();
+                                    List<String> ipwhitelist = iProtectorMain.getInstance().config.getWhitelisted_ips();
 
                                     // Check if IP is whitelisted.
                                     if (!ipwhitelist.contains(args[3])) {
@@ -98,10 +98,10 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     ipwhitelist.remove(args[3]);
 
-                                    iProtectorMain.config.setWhitelisted_ips(ipwhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_ips(ipwhitelist);
                                     cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the whitelist.");
                                 case "name":
-                                    List<String> namewhitelist = iProtectorMain.config.getWhitelisted_names();
+                                    List<String> namewhitelist = iProtectorMain.getInstance().config.getWhitelisted_names();
 
                                     // Check if Name is whitelisted.
                                     if (!namewhitelist.contains(args[3])) {
@@ -110,7 +110,7 @@ public class iProtectorCommand implements CommandExecutor {
                                     }
                                     namewhitelist.remove(args[3]);
 
-                                    iProtectorMain.config.setWhitelisted_names(namewhitelist);
+                                    iProtectorMain.getInstance().config.setWhitelisted_names(namewhitelist);
                                     cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the whitelist.");
                             } else cs.sendMessage(prefix + "§cYou forgot to specify a uuid, ip, or name to unwhitelist!");
                     } else cs.sendMessage(prefix + "§cWhat do you want to do? add or remove someone from the whitelist?");
@@ -120,7 +120,7 @@ public class iProtectorCommand implements CommandExecutor {
                         // For adding things to the blacklist.
                         if (args.length >= 4) switch (args[2]) {
                             case "uuid":
-                                List<UUID> uuidblacklist = iProtectorMain.config.getBlacklisted_uuids();
+                                List<UUID> uuidblacklist = iProtectorMain.getInstance().config.getBlacklisted_uuids();
 
                                 // Check if UUID is already blacklisted.
                                 if (uuidblacklist.contains(UUID.fromString(args[3]))) {
@@ -129,7 +129,7 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 uuidblacklist.add(UUID.fromString(args[3]));
 
-                                iProtectorMain.config.setBlacklisted_uuids(uuidblacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_uuids(uuidblacklist);
                                 cs.sendMessage(prefix + "§bAdded " + args[3] + " to the blacklist.");
                             case "ip":
                                 if (!args[3].contains(".")) {
@@ -137,7 +137,7 @@ public class iProtectorCommand implements CommandExecutor {
                                     return false;
                                 }
 
-                                List<String> ipblacklist = iProtectorMain.config.getBlacklisted_ips();
+                                List<String> ipblacklist = iProtectorMain.getInstance().config.getBlacklisted_ips();
 
                                 // Check if IP is already blacklisted.
                                 if (ipblacklist.contains(args[3])) {
@@ -146,10 +146,10 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 ipblacklist.add(args[3]);
 
-                                iProtectorMain.config.setBlacklisted_ips(ipblacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_ips(ipblacklist);
                                 cs.sendMessage(prefix + "§bAdded " + args[3] + " to the Blacklist.");
                             case "name":
-                                List<String> nameBlacklist = iProtectorMain.config.getBlacklisted_names();
+                                List<String> nameBlacklist = iProtectorMain.getInstance().config.getBlacklisted_names();
 
                                 // Check if Name is already Blacklisted.
                                 if (nameBlacklist.contains(args[3])) {
@@ -158,14 +158,14 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 nameBlacklist.add(args[3]);
 
-                                iProtectorMain.config.setBlacklisted_names(nameBlacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_names(nameBlacklist);
                                 cs.sendMessage(prefix + "§bAdded " + args[3] + " to the Blacklist.");
                         } else cs.sendMessage(prefix + "§cYou forgot to specify a uuid, ip, or name to Blacklist!");
 
                     case "remove":
                         if (args.length >= 4) switch (args[2]) {
                             case "uuid":
-                                List<UUID> uuidBlacklist = iProtectorMain.config.getBlacklisted_uuids();
+                                List<UUID> uuidBlacklist = iProtectorMain.getInstance().config.getBlacklisted_uuids();
 
                                 // Check if UUID is Blacklisted.
                                 if (!uuidBlacklist.contains(UUID.fromString(args[3]))) {
@@ -174,7 +174,7 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 uuidBlacklist.remove(UUID.fromString(args[3]));
 
-                                iProtectorMain.config.setBlacklisted_uuids(uuidBlacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_uuids(uuidBlacklist);
                                 cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the Blacklist.");
                             case "ip":
                                 if (!args[3].contains(".")) {
@@ -182,7 +182,7 @@ public class iProtectorCommand implements CommandExecutor {
                                     return false;
                                 }
 
-                                List<String> ipBlacklist = iProtectorMain.config.getBlacklisted_ips();
+                                List<String> ipBlacklist = iProtectorMain.getInstance().config.getBlacklisted_ips();
 
                                 // Check if IP is Blacklisted.
                                 if (!ipBlacklist.contains(args[3])) {
@@ -191,10 +191,10 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 ipBlacklist.remove(args[3]);
 
-                                iProtectorMain.config.setBlacklisted_ips(ipBlacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_ips(ipBlacklist);
                                 cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the Blacklist.");
                             case "name":
-                                List<String> nameBlacklist = iProtectorMain.config.getBlacklisted_names();
+                                List<String> nameBlacklist = iProtectorMain.getInstance().config.getBlacklisted_names();
 
                                 // Check if Name is Blacklisted.
                                 if (!nameBlacklist.contains(args[3])) {
@@ -203,7 +203,7 @@ public class iProtectorCommand implements CommandExecutor {
                                 }
                                 nameBlacklist.remove(args[3]);
 
-                                iProtectorMain.config.setBlacklisted_names(nameBlacklist);
+                                iProtectorMain.getInstance().config.setBlacklisted_names(nameBlacklist);
                                 cs.sendMessage(prefix + "§bRemoved " + args[3] + " from the blacklist.");
                         } else cs.sendMessage(prefix + "§cYou forgot to specify a uuid, ip, or name to unblacklist!");
                 } else cs.sendMessage(prefix + "§cWhat do you want to do? add or remove someone from the blacklist?");

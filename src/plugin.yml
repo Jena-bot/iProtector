@@ -1,7 +1,8 @@
 name: iProtector
-main: com.civuniverse.ip.iProtectorMain
+main: com.github.Hafixion.iProtectorMain
+author: Hafixion
 api-version: 1.12
-version: b1.0
+version: b1.5
 
 commands:
   /iprotect:

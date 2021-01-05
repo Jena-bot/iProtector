@@ -1,4 +1,4 @@
-package com.civuniverse.ip;
+package com.github.Hafixion.managers;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.PBEConfig;
@@ -6,10 +6,10 @@ import org.jasypt.salt.SaltGenerator;
 
 import java.security.Provider;
 
-class EncryptionManager {
-    private static PBEConfig config;
+public class EncryptionManager {
+    private final PBEConfig config;
 
-    public static void main(String[] args) {
+    public EncryptionManager(String key) {
         config = new PBEConfig() {
             @Override
             public String getAlgorithm() {
@@ -18,7 +18,7 @@ class EncryptionManager {
 
             @Override
             public String getPassword() {
-                return args[0];
+                return key;
             }
 
             @Override
@@ -48,14 +48,14 @@ class EncryptionManager {
         };
     }
 
-    protected static String encrypt(String string) {
+    public String encrypt(String string) {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setConfig(config);
 
         return encryptor.encrypt(string);
     }
 
-    protected static String decrypt(String string) {
+    public String decrypt(String string) {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setConfig(config);
 

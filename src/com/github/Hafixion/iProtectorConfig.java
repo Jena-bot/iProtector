@@ -1,8 +1,13 @@
-package com.civuniverse.ip;
+package com.github.Hafixion;
 
+import com.github.Hafixion.object.ipData;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,70 +15,90 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-class iProtectorConfig {
+public class iProtectorConfig {
     // Whether or not encryption is enabled. Using (REDACTED) encryption, key is the encryption key used.
-    protected boolean encrypt;
-    protected String key;
+    public boolean encrypt;
+    private final String key;
 
     // Whether or not to prevent players from joining
-    protected boolean prevent;
+    public boolean prevent;
 
     // Whether or not to alert people with permission
-    protected boolean alert;
+    public boolean alert;
 
-    // Block level
-    protected int block;
+    // Protection Level
+    public int protect;
 
-    // Verified IPs, using to avoid pinging the IP Fraud checker too much, it has a limit of 1k ip queries per day.
-    protected List<String> verifiedips = new ArrayList<>();
-    // Flagged IPs, confirmed Proxy/VPNs. avoids pinging the IP Fraud checker.
-    protected List<String> flaggedips = new ArrayList<>();
+    public String api_key;
+
+    public String contact;
+
+    // Local IP storage, normally encrypted, used to keep data locally in order to avoid querying too much.
+    public List<ipData> localips = new ArrayList<>();
 
     // Black/Whitelist
-    protected List<UUID> whitelisted_uuids = new ArrayList<>();
-    protected List<UUID> blacklisted_uuids = new ArrayList<>();
+    public List<UUID> whitelisted_uuids = new ArrayList<>();
+    public List<UUID> blacklisted_uuids = new ArrayList<>();
 
-    protected List<String> whitelisted_ips = new ArrayList<>();
-    protected List<String> blacklisted_ips = new ArrayList<>();
+    public List<String> whitelisted_ips = new ArrayList<>();
+    public List<String> blacklisted_ips = new ArrayList<>();
 
-    protected List<String> whitelisted_names = new ArrayList<>();
-    protected List<String> blacklisted_names = new ArrayList<>();
+    public List<String> whitelisted_names = new ArrayList<>();
+    public List<String> blacklisted_names = new ArrayList<>();
 
-    protected iProtectorConfig(FileConfiguration config, FileConfiguration verified) throws InvalidConfigurationException {
+    public iProtectorConfig(FileConfiguration config, FileConfiguration data) throws InvalidConfigurationException {
         boolean[] error = {false, false, false, false};
-        
-        // import verified ips
-        verifiedips.addAll(verified.getStringList("verify"));
-        // import flagged ips
-        flaggedips.addAll(verified.getStringList("flag"));
 
         // import encryption config
         encrypt = config.getBoolean("encryption");
         if (encrypt) key = config.getString("key");
         else key = "disabled";
 
+        // Import locally stored IP data
+        if (encrypt) {
+            data.getValues(true).keySet().forEach(s -> {
+                try {
+                    localips.add(new ipData((JSONObject) new JSONParser().parse(iProtectorMain.getInstance().encryptor.decrypt(data.getString(s)))));
+                } catch (JSONException | ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            data.getValues(true).keySet().forEach(s -> {
+                try {
+                    localips.add(new ipData((JSONObject) new JSONParser().parse(data.getString(s))));
+                } catch (ParseException | JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
         // import prevent player join
         prevent = config.getBoolean("prevent-player-join");
 
+        // Import api key and contact info
+        contact = config.getString("contact-info");
+        api_key = config.getString("api-key");
+
         // import block level and alerts
-        block = config.getInt("block-level");
+        protect = config.getInt("protection-level");
         alert = config.getBoolean("alert");
 
         // Whitelisted
         config.getStringList("whitelist").forEach(s -> {
-            
+
             if (s.contains("(IP)")) {
                 s = s.replace("(IP) ", "");
                 whitelisted_ips.add(s);
                 return;
             }
-            
+
             if (s.contains("(UUID)")) {
                 s = s.replace("(UUID) ", "");
                 whitelisted_uuids.add(UUID.fromString(s));
                 return;
             }
-            
+
             if (s.contains("(Name)")) {
                 s = s.replace("(Name) ", "");
                 whitelisted_names.add(s);
@@ -110,37 +135,24 @@ class iProtectorConfig {
         });
         if (error[1]) throw new InvalidConfigurationException("Blacklist Invalid!");
     }
-    
+
     // Save Function
-    protected void save(File file, File verify) throws IOException {
+    public void save(File file, File verify) throws IOException {
         YamlConfiguration yaml = new YamlConfiguration();
-        
-        // Save verified ips
-        if (encrypt) {
-            List<String> encrypted = new ArrayList<>();
-            verifiedips.forEach(s -> encrypted.add(EncryptionManager.encrypt(s)));
-            yaml.set("verify", encrypted);
-        } else {
-            yaml.set("verify", verifiedips);
-            yaml.save(verify);
-        }
-        // Save flagged ips
-        if (encrypt) {
-            List<String> encrypted = new ArrayList<>();
-            flaggedips.forEach(s -> encrypted.add(EncryptionManager.encrypt(s)));
-            yaml.set("flag", encrypted);
-        } else {
-            yaml.set("flag", flaggedips);
-            yaml.save(verify);
-        }
-        
+        YamlConfiguration local = new YamlConfiguration();
+
+        // Saving Local IPs
+        if (encrypt) localips.forEach(ip -> local.set(iProtectorMain.getInstance().encryptor.encrypt(ip.getIp()),
+                iProtectorMain.getInstance().encryptor.encrypt(ip.toJSON().toString())));
+        else localips.forEach(ip -> local.set(ip.getIp(), ip.toJSON().toString()));
+
         // Save Whitelist
         List<String> whitelist = new ArrayList<>();
-        
+
         whitelisted_names.forEach(s -> whitelist.add("(Name) " + s));
         whitelisted_ips.forEach(s -> whitelist.add("(IP) " + s));
         whitelisted_uuids.forEach(u -> whitelist.add("(UUID) " + u.toString()));
-        
+
         yaml.set("whitelist", whitelist);
 
         // Save blacklist
@@ -155,6 +167,7 @@ class iProtectorConfig {
 
         // Save it to the config.
         yaml.save(file);
+        local.save(verify);
     }
 
     // Getters and setters
@@ -167,8 +180,20 @@ class iProtectorConfig {
         return encrypt;
     }
 
-    public int getBlock() {
-        return block;
+    public int getProtect() {
+        return protect;
+    }
+
+    public boolean isPrevent() {
+        return prevent;
+    }
+
+    public String getApi_key() {
+        return api_key;
+    }
+
+    public String getContact() {
+        return contact;
     }
 
     public List<String> getBlacklisted_ips() {
@@ -181,10 +206,6 @@ class iProtectorConfig {
 
     public List<String> getWhitelisted_ips() {
         return whitelisted_ips;
-    }
-
-    public List<String> getVerifiedips() {
-        return verifiedips;
     }
 
     public List<String> getWhitelisted_names() {
@@ -201,26 +222,6 @@ class iProtectorConfig {
 
     protected String getKey() {
         return key;
-    }
-
-    public List<String> getFlaggedips() {
-        return flaggedips;
-    }
-
-    public void addFlag(String ip) {
-        flaggedips.add(ip);
-    }
-
-    public void removeFlag(String ip) {
-        flaggedips.remove(ip);
-    }
-
-    public void verify(String ip) {
-        verifiedips.add(ip);
-    }
-
-    public void unverify(String ip) {
-        verifiedips.remove(ip);
     }
 
     public void setBlacklisted_ips(List<String> blacklisted_ips) {
@@ -245,5 +246,23 @@ class iProtectorConfig {
 
     public void setWhitelisted_uuids(List<UUID> whitelisted_uuids) {
         this.whitelisted_uuids = whitelisted_uuids;
+    }
+
+    public List<ipData> getLocalips() {
+        return localips;
+    }
+
+    public void setLocalips(List<ipData> localips) {
+        this.localips = localips;
+    }
+
+    public void addIp(ipData ip) {
+        this.localips.add(ip);
+    }
+
+    public void removeIp(ipData ip) {
+        this.localips.forEach(ipData -> {
+            if (ipData.equals(ip)) this.localips.remove(ip);
+        });
     }
 }
