@@ -65,7 +65,7 @@ public class iProtectorMain extends JavaPlugin {
         encryptor = new EncryptionManager(config.getKey());
 
         // Register Listener
-        //Bukkit.getPluginManager().registerEvents(new iProtectorListener(), this);
+        Bukkit.getPluginManager().registerEvents(new iProtectorListener(), this);
 
         // Register Command
         getCommand("/iprotect").setExecutor(new iProtectorCommand());
@@ -98,9 +98,13 @@ public class iProtectorMain extends JavaPlugin {
             }
         }
 
+        saveDefaultConfig();
+        plugin = this;
+
         if (!getConfig().getBoolean("enabled")) {
             getLogger().severe("IPROTECTOR DISABLED, CHECK CONFIG.YML");
             this.setEnabled(false);
+            return;
         }
 
         // Load Verified IPs
@@ -118,6 +122,7 @@ public class iProtectorMain extends JavaPlugin {
         } catch (InvalidConfigurationException e) {
             getServer().getConsoleSender().sendMessage(e.getMessage());
             this.setEnabled(false);
+            return;
         }
 
         // Check if the key is set to the default value.
@@ -125,13 +130,21 @@ public class iProtectorMain extends JavaPlugin {
             if (config.getKey().equalsIgnoreCase("NULL")) {
                 getLogger().severe("Encryption was enabled but key was not yet, change the key in config.yml to a unique value.");
                 this.setEnabled(false);
+                return;
             }
         } else getLogger().warning("Encryption is disabled, it's recommended to enable it to improve data security.");
+
+        // Check if Valid Contact Info.
+        if (config.getProtect() == 3 && !EmailValidator.getInstance().isValid(config.getContact())) {
+            getLogger().severe("PROTECTION LEVEL IS 3 YET CONTACT INFO IS INVALID, PLEASE CHANGE CONFIG.YML TO A VALID EMAIL.");
+            this.setEnabled(false);
+            return;
+        }
 
         // Initialize Encryption
         encryptor = new EncryptionManager(config.getKey());
 
-        getServer().getConsoleSender().sendMessage("iProtector reloaded successfully.");
+        getLogger().info("iProtector loaded successfully.");
     }
 
     public static iProtectorMain getInstance() {

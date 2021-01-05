@@ -23,6 +23,10 @@ public class ConnectionManager {
         this.level = level;
     }
 
+    public ipData getIpStatus(String ip) {
+        return getIpStatus(ip, level);
+    }
+
     public ipData getIpStatus(String ip, int protect) {
         ipData data = new ipData();
         try {

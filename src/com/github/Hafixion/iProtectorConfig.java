@@ -29,6 +29,9 @@ public class iProtectorConfig {
     // Protection Level
     public int protect;
 
+    // Threshold
+    public float threshold;
+
     public String api_key;
 
     public String contact;
@@ -80,7 +83,8 @@ public class iProtectorConfig {
         contact = config.getString("contact-info");
         api_key = config.getString("api-key");
 
-        // import block level and alerts
+        // import block level and alerts and threshold
+        threshold = (float) config.getDouble("threshold");
         protect = config.getInt("protection-level");
         alert = config.getBoolean("alert");
 
@@ -222,6 +226,10 @@ public class iProtectorConfig {
 
     protected String getKey() {
         return key;
+    }
+
+    public float getThreshold() {
+        return threshold;
     }
 
     public void setBlacklisted_ips(List<String> blacklisted_ips) {

@@ -17,6 +17,10 @@ prevent-player-join: true
 # 3 - Using getipintel.net, AI algorithm which rates IPs, 500 query soft-limit per day, although it has a fair use policy.
 protection-level: 2
 
+# Threshold, our ip flaggers provide a probability number between 0-1 defining the chance of it being a bad ip.
+# Recommended amount is 0.8-1, any lower has the change of flagging innocent people.
+threshold: 0.9
+
 # Whether or not to send alerts to players with the iProtector.alert permission. defaults to false.
 alerts: false
 
